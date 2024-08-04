@@ -1,95 +1,64 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import CustomTable from "@/components/Table/CustomTable";
+import { useEffect, useState } from "react";
+import { Button, Container, Typography } from "@mui/material";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, firestore } from "@/firebase";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    const [items, setItems] = useState<any>([]);
+    const router = useRouter();
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+    const fetchData = async () => {
+        const user = auth.currentUser;
+        if (user) {
+            const docRef = doc(firestore, "pantry", user.uid);
+            const docSnap = await getDoc(docRef);
+            const data = docSnap.data();
+            setItems(data?.items);
+        } else {
+            return router.push("/signin");
+        }
+    };
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    return (
+        <Container
+            maxWidth="md"
+            sx={{
+                textAlign: "center",
+                px: 2,
+                py: 6,
+            }}>
+            <Typography variant="h4" color="primary" fontWeight="800" mb={4}>
+                Pantry Items
+            </Typography>
+            <Button
+                variant="contained"
+                onClick={() => router.push("/update")}
+                sx={{
+                    color: "secondary.main",
+                    bgcolor: "primary.main",
+                    my: 2,
+                    float: "right",
+                    ":hover": {
+                        opacity: 0.85,
+                    },
+                }}>
+                Update
+            </Button>
+            {items && items.length > 0 ? (
+                <CustomTable data={items} />
+            ) : (
+                <Typography variant="h6" color="primary" mt={4}>
+                    No data
+                </Typography>
+            )}
+        </Container>
+    );
 }
