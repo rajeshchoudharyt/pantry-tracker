@@ -51,19 +51,6 @@ export default function Home() {
 		}
 	};
 
-	const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-		setValue(e.target.value);
-
-		if (e.target.value === "") {
-			setSearchItems([...items]);
-			return;
-		}
-
-		setSearchItems(
-			items.filter(item => item.name.toLowerCase().startsWith(value))
-		);
-	};
-
 	if (progress) {
 		return (
 			<Box
@@ -98,7 +85,7 @@ export default function Home() {
 					name="search"
 					placeholder="Search..."
 					value={value}
-					onChange={handleSearch}
+					onChange={e => setValue(e.target.value)}
 					sx={{ minWidth: "6rem", width: "80%" }}
 				/>
 				<Button
@@ -138,7 +125,8 @@ export default function Home() {
 						<TableBody>
 							{searchItems
 								? Object.values(searchItems).map(item => (
-										<Row key={item.id} item={item} />
+									   item.name.toLowerCase().includes(value.toLowerCase())
+									     && <Row key={item.id} item={item} />
 								  ))
 								: ""}
 						</TableBody>
