@@ -5,22 +5,22 @@ import { theme } from "@/utils/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
-    title: "Pantry Tracker",
-    description: "Pantry Tracker App built using Next.js, Firebase, MUI",
+	title: "Pantry Tracker",
+	description: "Pantry Tracker App built using Next.js, Firebase, MUI",
 };
 
 export default function RootLayout({
-    children,
+	children,
 }: Readonly<{
-    children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-    return (
-        <html lang="en">
-            <body>
-                <AppRouterCacheProvider>
-                    <ThemeProvider theme={theme}>{children}</ThemeProvider>
-                </AppRouterCacheProvider>
-            </body>
-        </html>
-    );
+	return (
+		<html lang="en">
+			<body>
+				<AppRouterCacheProvider>
+					<ThemeProvider theme={theme}>{children}</ThemeProvider>
+				</AppRouterCacheProvider>
+			</body>
+		</html>
+	);
 }
