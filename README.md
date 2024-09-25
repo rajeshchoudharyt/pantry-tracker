@@ -1,3 +1,5 @@
+A fullstack pantry tracker app to track the pantry items.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
